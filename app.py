@@ -5,7 +5,8 @@ import os
 
 processes = []
 thread = int(os.environ.get('THREAD',3))
-domain_name = os.environ.get('DOMAIN_NAME','http://flaskapp.openshiftnode.gtrrt.click/')
+# domain_name = os.environ.get('DOMAIN_NAME','http://flaskapp.openshiftnode.gtrrt.click/')
+domain_name = os.environ.get('DOMAIN_NAME','http://flask-app-chaosproject.router.default.svc.cluster.local')
 sleep_time = int(os.environ.get('SLEEP_TIME',3))
 
 def query_server(domainname):
