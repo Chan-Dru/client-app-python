@@ -4,6 +4,7 @@ from multiprocessing import Process
 import os
 import logging
 import logging.handlers
+import datetime
 
 logger = logging.getLogger('client_program')
 logger.setLevel(logging.DEBUG)
@@ -19,16 +20,29 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 processes = []
-thread = int(os.environ.get('THREAD',3))
-domain_name = os.environ.get('DOMAIN_NAME','http://os-sample-python-python-flask.okdexperimentation.gtrrt.click')
-sleep_time = int(os.environ.get('SLEEP_TIME',3))
+thread = int(os.environ.get('THREAD',50))
+domain_name = os.environ.get('DOMAIN_NAME','http://os-sample-python-python-flask-new.okdexperimentation.gtrrt.click')
+sleep_time = int(os.environ.get('SLEEP_TIME',1))
+timeout_duration = int(os.environ.get('TIMEOUT_DURATION',5))
 
 def query_server(domainname):
-    start = time.time()
-    r = requests.get(domainname)
-    roundtrip = time.time() - start
-    #print(r.status_code,roundtrip,os.getppid(),os.getpid(),r.headers['Date'])
-    logger.info("%s - %s - %s - %s - %s",r.status_code,roundtrip,os.getppid(),os.getpid(),r.headers['Date'])
+    try:
+      start = datetime.datetime.now()
+      r = requests.get(domainname,timeout=timeout_duration)
+      roundtrip = datetime.datetime.now() - start
+      #print(r.status_code,roundtrip,os.getppid(),os.getpid(),r.headers['Date'])
+      status_code = r.status_code
+      #response = r.text
+      if status_code != 200:
+        response = "The Host not exists"
+        print(r)
+        #print(r.text)
+        logger.info("%s - %s - %s - %s - %s - %s",start,r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),response)
+      else:
+        logger.info("%s - %s - %s - %s - %s - %s",start,r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),r.text)
+    except requests.exceptions.ReadTimeout:
+        roundtrip = datetime.datetime.now() - start
+        logger.info("%s - %s - %s - %s - %s - %s",start,504,roundtrip.total_seconds(),os.getppid(),os.getpid(),"The Request Timeout")
 
 def f(domainname,delay):
     while(True):
