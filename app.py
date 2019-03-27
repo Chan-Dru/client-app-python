@@ -24,34 +24,32 @@ thread = int(os.environ.get('THREAD',50))
 domain_name = os.environ.get('DOMAIN_NAME','http://os-sample-python-python-flask-new.okdexperimentation.gtrrt.click')
 sleep_time = int(os.environ.get('SLEEP_TIME',1))
 timeout_duration = int(os.environ.get('TIMEOUT_DURATION',5))
+runtime_duration = int(os.environ.get('RUNTIME_DURATION',300))
 
 def query_server(domainname):
-    try:
-      start = datetime.datetime.now()
-      r = requests.get(domainname,timeout=timeout_duration)
-      roundtrip = datetime.datetime.now() - start
-      #print(r.status_code,roundtrip,os.getppid(),os.getpid(),r.headers['Date'])
-      status_code = r.status_code
-      #response = r.text
-      if status_code != 200:
+    start = datetime.datetime.now()
+    r = requests.get(domainname)
+    #r = requests.get(domainname,timeout=timeout_duration)
+    roundtrip = datetime.datetime.now() - start
+    status_code = r.status_code
+    if status_code != 200:
         response = "The Host not exists"
         print(r)
-        #print(r.text)
-        logger.info("%s - %s - %s - %s - %s - %s",start,r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),response)
-      else:
-        logger.info("%s - %s - %s - %s - %s - %s",start,r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),r.text)
-    except requests.exceptions.ReadTimeout:
-        roundtrip = datetime.datetime.now() - start
-        logger.info("%s - %s - %s - %s - %s - %s",start,504,roundtrip.total_seconds(),os.getppid(),os.getpid(),"The Request Timeout")
+        logger.info("%s, %s, %s, %s, %s, %s",start.replace(microsecond=0),r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),response)
+    else:
+        logger.info("%s, %s, %s, %s, %s, %s",start.replace(microsecond=0),r.status_code,roundtrip.total_seconds(),os.getppid(),os.getpid(),r.text)
+    # except requests.exceptions.ReadTimeout:
+    #     roundtrip = datetime.datetime.now() - start
+    #     logger.info("%s, %s, %s, %s, %s, %s",start.replace(microsecond=0),504,roundtrip.total_seconds(),os.getppid(),os.getpid(),"The Request Timeout")
 
 def f(domainname,delay):
-    while(True):
+    endTime = datetime.datetime.now() + datetime.timedelta(seconds=runtime_duration)
+    while(datetime.datetime.now() < endTime):
         query_server(domainname)
         time.sleep(delay)
 
 if __name__ == '__main__':
-   # print("STATUS CODE,ROUND TRIP TIME,PARENT PROCESS ID,CHILD PROCESS ID,DATE")
-    logger.info("STATUS CODE - ROUND TRIP TIME - PARENT PROCESS ID - CHILD PROCESS ID - DATE")
+    logger.info("REQUEST SENT TIME, STATUS CODE, ROUND TRIP TIME, PARENT PROCESS ID, CHILD PROCESS ID, POD NAME")
     for i in range(thread):
         p = Process(target=f, args=(domain_name,sleep_time,))
         p.start()
