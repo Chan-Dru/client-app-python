@@ -1,0 +1,28 @@
+2019-04-04 09:24:29,510, client_program, INFO, program scale up in the range[50, 100, 150]
+2019-04-04 09:24:29,510, client_program, INFO, Initial Pod Count 50
+2019-04-04 09:24:30,512, client_program, INFO, Scale Pod to 50
+2019-04-04 09:24:31,519, client_program, INFO, Scale Pod to 100
+2019-04-04 09:24:32,523, client_program, INFO, Scale Pod to 150
+2019-04-04 09:24:33,527, client_program, INFO, Scale Pod to 200
+2019-04-04 09:26:15,831, client_program, INFO, program scale up in the range[50, 100, 150]
+2019-04-04 09:26:15,832, client_program, INFO, Initial Pod Count 50
+2019-04-04 09:26:16,834, client_program, INFO, Scale Pod to 50
+2019-04-04 09:26:17,837, client_program, INFO, Scale Pod to 100
+2019-04-04 09:26:18,841, client_program, INFO, Scale Pod to 150
+2019-04-04 09:26:19,845, client_program, INFO, Scale Pod to 200
+2019-04-04 09:27:18,533, client_program, INFO, program scale up in the range[50, 100, 150]
+2019-04-04 09:27:18,533, client_program, INFO, Initial Pod Count 50
+2019-04-04 09:27:19,535, client_program, INFO, Scale Pod to 50
+2019-04-04 09:27:20,539, client_program, INFO, Scale Pod to 100
+2019-04-04 09:27:21,542, client_program, INFO, Scale Pod to 150
+2019-04-04 09:27:22,546, client_program, INFO, Scale Pod to 200
+2019-04-04 09:28:05,237, client_program, INFO, program scale up in the range[50, 100, 150, 200]
+2019-04-04 09:28:05,237, client_program, INFO, Initial Pod Count 50
+2019-04-04 09:28:06,239, client_program, INFO, Scale Pod to 51
+2019-04-04 09:28:07,243, client_program, INFO, Scale Pod to 101
+2019-04-04 09:28:08,247, client_program, INFO, Scale Pod to 151
+2019-04-04 09:28:27,078, client_program, INFO, program scale up in the range[50, 100, 150, 200]
+2019-04-04 09:28:27,078, client_program, INFO, Initial Pod Count 50
+2019-04-04 09:28:28,080, client_program, INFO, Scale Pod to 100
+2019-04-04 09:28:29,084, client_program, INFO, Scale Pod to 150
+2019-04-04 09:28:30,088, client_program, INFO, Scale Pod to 200
