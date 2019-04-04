@@ -1,10 +1,12 @@
 import requests
 import time
 from multiprocessing import Process
+from multiprocessing import Pool
 import os
 import logging
 import logging.handlers
 import datetime
+
 
 logger = logging.getLogger('client_program')
 logger.setLevel(logging.DEBUG)
@@ -14,7 +16,8 @@ formatter = logging.Formatter('%(asctime)s, %(name)s, %(levelname)s, %(message)s
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-handler = logging.handlers.TimedRotatingFileHandler("/home/centos/logs/client_log",'midnight',1)
+#/home/centos/logs/client_log
+handler = logging.handlers.TimedRotatingFileHandler("client_log",'midnight',1)
 handler.suffix = "%Y-%m-%d"
 handler.setFormatter(formatter)
 logger.addHandler(handler)
@@ -48,11 +51,19 @@ def f(domainname,delay):
         query_server(domainname)
         time.sleep(delay)
 
+# if __name__ == '__main__':
+#     logger.info("REQUEST SENT TIME, STATUS CODE, ROUND TRIP TIME, PARENT PROCESS ID, CHILD PROCESS ID, POD NAME")
+#     for i in range(thread):
+#         p = Process(target=f, args=(domain_name,sleep_time,))
+#         p.start()
+#         processes.append(p)
+#     for p in processes:
+#         p.join()
+
+
 if __name__ == '__main__':
     logger.info("REQUEST SENT TIME, STATUS CODE, ROUND TRIP TIME, PARENT PROCESS ID, CHILD PROCESS ID, POD NAME")
-    for i in range(thread):
-        p = Process(target=f, args=(domain_name,sleep_time,))
-        p.start()
-        processes.append(p)
-    for p in processes:
-        p.join()
+    p = Pool(thread)
+    p.map(f,[domain_name,sleep_time])
+    p.close()
+    p.join()
