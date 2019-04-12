@@ -20,22 +20,24 @@ config = configparser.ConfigParser()
 config.read('server-configuration.properties', encoding='utf-8')
 # config.readfp(codecs.open("server-configuration.properties", "r", "utf8"))
 
+fileName = "server_log"
+handler = logging.handlers.TimedRotatingFileHandler(fileName,'midnight',1)
+handler.suffix = "%Y-%m-%d"
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+commandFlag = str(config["Command"]["Flag"])
+
 
 def server(time_string):
     # fileName = str(sys.argv[1]+time_string)
-    fileName = "server_log"
-    handler = logging.handlers.TimedRotatingFileHandler(fileName,'midnight',1)
-    handler.suffix = "%Y-%m-%d"
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
     namespace = str(config["Project"]["Name"])
+    commandFlag = str(config["Command"]["Flag"])
+    command = str(config["Command"][commandFlag])
     initialPodCount = int(config["Pod"]["InitialCount"])
     maxPodCount = int(config["Pod"]["FinalCount"])
     podStepCount = int(config["Pod"]["StepCount"])
     stepDuration = int(config["Pod"]["StepDurationSeconds"])
-    commandFlag = str(config["Command"]["Flag"])
-    command = str(config["Command"][commandFlag])
     s3_bucket = str(config["Storage"]["s3_bucket"])
     print(type(initialPodCount))
     
@@ -57,11 +59,32 @@ def server(time_string):
     # os.system("aws s3 cp "+fileName+" "+s3_bucket)
 
         
+def rolling_update(time_string):
+    namespace = str(config["Project"]["Name"])
+    commandFlag = str(config["Command"]["Flag"])
+    command = str(config["Command"][commandFlag])
+    initialVersion = str(config["RollingUpdate"]["InitialVersion"])
+    finalVersion = str(config["RollingUpdate"]["FinalVersion"])
+    versionChangeDuration = int(config["RollingUpdate"]["VersionChangeDurationSeconds"])
+    experimentDuration = int(config["RollingUpdate"]["ExperimentDurationSeconds"])
+    time.sleep(versionChangeDuration)
+    logger.info("program rolling update from version %s to %s",initialVersion,finalVersion)
+    os.system(command.replace("Version",finalVersion))
+    time.sleep(experimentDuration)
+    logger.info("program revert rolling update from version %s to %s",finalVersion,initialVersion)
+    os.system(command.replace("Version",initialVersion))
+     
+     
+    
 if __name__=="__main__":
     print(sys.argv)
     if (len(sys.argv)==2):
         named_tuple = time.localtime() # get struct_time
         time_string = time.strftime("%m_%d_%Y_%H_%M", named_tuple)
-        server(time_string)
+        if (commandFlag=="scale"):
+            server(time_string)
+        elif (commandFlag=="RollingUpdate"):
+            rolling_update(time_string)
+            
     else:
         print("Please provide the file name")
